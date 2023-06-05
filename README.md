@@ -1,13 +1,23 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Frontend Coding Challenge
 
-## Available Scripts
+This project was bootstrapped with React Js.
 
-In the project directory, you can run:
+## About this project
 
-### `npm start`
+In the project we have listed NFTs in a grid. User can search for NFT by title. Grid is virtualized and screen responsive.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Requirements
+[React Js v18](https://www.npmjs.com/package/react)
+
+## Setup Instructions
+Clone the repo and install the dependencies.
+
+`npm install`
+
+### Running on local
+
+To start the server, run the following
+
+`npm start`
 
