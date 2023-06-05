@@ -17,7 +17,7 @@ Clone the repo and install the dependencies.
 
 ### Running on local
 
-To start the server, run the following
+To start the app, run the following
 
 `npm start`
 
