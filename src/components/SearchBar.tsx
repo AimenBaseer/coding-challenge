@@ -12,7 +12,7 @@ const SearchBar: FunctionComponent<Props> = ({
   handleSearchClick,
 }) => {
   return (
-    <Stack direction="row" className="self-center">
+    <Stack direction="row" className="self-center w-64 md:w-96">
       <TextField
         id="filled-basic"
         label="Search"
