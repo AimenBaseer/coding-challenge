@@ -9,11 +9,13 @@ import { getNFts } from "../repositories/nft-repository";
 import Loader from "./Loader";
 import { NftCell } from "./NftCell";
 import SearchBar from "./SearchBar";
+import { MAX_API_RETRIES } from "../constants";
+import Alerts from "./Alert";
 
 const limit = 20;
 const itemHeight = 300;
 const gridGapRow = 20;
-const RETRY_DELAY = 1000;
+const RETRY_DELAY = 2000;
 
 const NftList: FunctionComponent = () => {
   const [nfts, setNfts] = useState<NftType[]>([]);
@@ -21,29 +23,45 @@ const NftList: FunctionComponent = () => {
   const [offset, setOffset] = useState(0);
   const [itemsPerRow, setItemsPerRow] = useState(4);
   const [searchText, setSearchText] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
+  const [error, setError] = useState({
+    display: false,
+    message: "",
+  });
 
   const fetchNfts = async () => {
-    setLoading(true);
-    const {
-      data: { results },
-    } = await getNFts(limit, offset);
-    setOffset(offset + limit);
-    setNfts((prevData) => [...prevData, ...results]);
-    setLoading(false);
-  };
-
-  const getData = () => {
     try {
-      fetchNfts();
-    } catch (e) {
+      setLoading(true);
+      const {
+        data: { results },
+      } = await getNFts(limit, offset);
+
+      setOffset(offset + limit);
+      setNfts((prevData) => [...prevData, ...results]);
+      setError({ display: false, message: error.message });
+
       setLoading(false);
-      setTimeout(fetchNfts, RETRY_DELAY);
+    } catch (e) {
+      setError({
+        display: true,
+        message: "Something went wrong! Trying again.. ",
+      });
+
+      if (retryCount < MAX_API_RETRIES) {
+        setTimeout(() => {
+          setRetryCount(retryCount + 1);
+        }, RETRY_DELAY);
+      }
     }
   };
 
   useEffect(() => {
-    getData();
+    fetchNfts();
   }, []);
+
+  useEffect(() => {
+    fetchNfts();
+  }, [retryCount]);
 
   const loadMoreItems = () => {
     fetchNfts();
@@ -76,6 +94,7 @@ const NftList: FunctionComponent = () => {
         handleChangeSearch={handleChangeSearch}
         handleSearchClick={handleSearchClick}
       />
+      <Alerts isOpen={error.display} text={error.message} />
 
       <AutoSizer>
         {({ width, height }: any) => (
